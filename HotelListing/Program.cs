@@ -1,5 +1,7 @@
 using HotelListing.Configurations;
 using HotelListing.Data;
+using HotelListing.IRepository;
+using HotelListing.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -9,7 +11,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 // Add services to the container.
+builder.Services.AddTransient<IUnitOfWork,UnitOfWork>();
+builder.Services.AddTransient(typeof(IGenericRepository<>),typeof(GenericRepository<>));
 
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
 
 // Adding database Context START,
 // GetConnectionString is obtained from appsettings.json and then name of our connection string is "sqlConnection"

@@ -8,7 +8,13 @@ namespace HotelListing.Repository
         private readonly DatabaseContext _context;
         private IGenericRepository<Country> _countries;
         private IGenericRepository<Hotel> _hotels;
-        
+
+        public UnitOfWork(DatabaseContext context, IGenericRepository<Country> countries, IGenericRepository<Hotel> hotels)
+        {
+            _context = context;
+            _countries = countries;
+            _hotels = hotels;
+        }
 
         public void Dispose()
         {

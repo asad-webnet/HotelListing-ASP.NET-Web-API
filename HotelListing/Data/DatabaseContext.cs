@@ -9,31 +9,38 @@ namespace HotelListing.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            Country country1 = new Country
+            {
+                CountryId = 1,
+                Name = "Pakistan",
+                ShortName = "PK"
+            };
+
+            Country country2 = new Country 
+            {
+                CountryId = 2,
+                Name = "India",
+                ShortName = "IND"
+            };
+
+            Country country3 = new Country
+            {
+                CountryId = 3,
+                Name = "United States",
+                ShortName = "USA"
+            };
+
             modelBuilder.Entity<Country>().HasData(
-                new Country
-                {
-                    CountryId = 1,
-                    Name = "Pakistan",
-                    ShortName = "PK"
-                },
-                new Country
-                {
-                    CountryId = 2,
-                    Name = "India",
-                    ShortName = "IND"
-                },
-                new Country
-                {
-                    CountryId = 3,
-                    Name = "United States",
-                    ShortName = "USA"
-                }
+                country1,
+                country2,
+                country3
+                
             );
 
             modelBuilder.Entity<Hotel>().HasData(
                 new Hotel
                 {
-                    Id = 1,
+                    HotelId = 1,
                     Name = "Quetta Hotel",
                     Address = "Machi miani road",
                     CountryId = 1, // Set the CountryId directly
@@ -41,7 +48,7 @@ namespace HotelListing.Data
                 },
                 new Hotel
                 {
-                    Id = 2,
+                    HotelId = 2,
                     Name = "Hindu Hotel",
                     Address = "Bahawalpur road",
                     CountryId = 2, // Set the CountryId directly
@@ -49,7 +56,7 @@ namespace HotelListing.Data
                 },
                 new Hotel
                 {
-                    Id = 3,
+                    HotelId = 3,
                     Name = "Burger King",
                     Address = "Mountpalace burmingham",
                     CountryId = 3, // Set the CountryId directly

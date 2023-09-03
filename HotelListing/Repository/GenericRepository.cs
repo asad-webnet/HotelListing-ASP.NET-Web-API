@@ -53,7 +53,7 @@ namespace HotelListing.Repository
             {
                 foreach (var includeProperty in includes)
                 {
-                    query.Include(includeProperty);
+                    query = query.Include(includeProperty);
                 }
             }
 
@@ -61,7 +61,7 @@ namespace HotelListing.Repository
         }
 
         public async Task Insert(T entity)
-        {
+        {   
             await _db.AddAsync(entity);
         }
 

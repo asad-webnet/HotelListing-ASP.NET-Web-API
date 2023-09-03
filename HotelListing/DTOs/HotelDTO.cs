@@ -22,6 +22,6 @@ namespace HotelListing.DTOs
 
     public class HotelDTO : CreateHotelDTO
     {
-        public int Id { get; set; }
+        public int HotelId { get; set; }
     }
 }
