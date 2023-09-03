@@ -1,14 +1,24 @@
+using HotelListing.Configurations;
+using HotelListing.Data;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 // Add services to the container.
 
-builder.Services.AddControllers();
 
-//Enabling CORS
+// Adding database Context START,
+// GetConnectionString is obtained from appsettings.json and then name of our connection string is "sqlConnection"
+builder.Services.AddDbContext<DatabaseContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("sqlConnection")));
+// Adding Database Context END
+
+
+//Enabling CORS START
 builder.Services.AddCors(p =>
 {
     p.AddPolicy("corsapp", builder =>
@@ -16,6 +26,10 @@ builder.Services.AddCors(p =>
         builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
     });
 });
+// Enabling CORS END
+
+
+builder.Services.AddAutoMapper(typeof(MapperInitializer));
 
 //Setting up Serilog START
 Log.Information("Application is starting");
@@ -42,6 +56,12 @@ finally
 //Setting up Serilog END
 
 
+builder.Services.AddControllers();
+
+
+
+
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -63,7 +83,7 @@ if (app.Environment.IsDevelopment())
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseHttpsRedirection();
-app.UseCors("corsapp")
+app.UseCors("corsapp");
 
 app.UseAuthorization();
 
