@@ -1,7 +1,10 @@
+using HotelListing;
 using HotelListing.Configurations;
 using HotelListing.Data;
 using HotelListing.IRepository;
 using HotelListing.Repository;
+using HotelListing.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -10,8 +13,10 @@ using Serilog.Events;
 var builder = WebApplication.CreateBuilder(args);
 
 
+
 // Add services to the container.
 builder.Services.AddTransient<IUnitOfWork,UnitOfWork>();
+builder.Services.AddScoped<IAuthManager, AuthManager>();
 builder.Services.AddTransient(typeof(IGenericRepository<>),typeof(GenericRepository<>));
 
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
@@ -23,6 +28,16 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("sqlConnection")));
 // Adding Database Context END
+
+// Configure Identity Security Services START
+builder.Services.AddAuthentication();
+builder.Services.ConfigureIdentity();
+
+// Configure Identity Security Services END
+
+// Configuration JWT START
+builder.Services.ConfigureJWT(builder.Configuration);
+// Configure JWT Stop
 
 
 //Enabling CORS START
@@ -92,8 +107,13 @@ app.UseSwaggerUI();
 app.UseHttpsRedirection();
 app.UseCors("corsapp");
 
+app.UseRouting();
+app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
 
 app.Run();
