@@ -4,7 +4,6 @@ namespace HotelListing.DTOs
 {
     public class CreateCountryDTO
     {
-        public int CountryId { get; set; }
         [Required]
         [StringLength(maximumLength:50, ErrorMessage = "Country Name Is Too Long")]
         public string Name { get; set; }
@@ -14,9 +13,15 @@ namespace HotelListing.DTOs
         public string ShortName { get; set; }
     }
 
+    public class UpdateCountryDTO : CreateCountryDTO
+    {
+        public IList<CreateHotelDTO> Hotels { get; set; }
+    }
+
     public class CountryDTO : CreateCountryDTO
     {
-        public int Id {get; set; }
+        public int CountryId { get; set; }
+
         public IList<HotelDTO> Hotels { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using HotelListing.Data;
+using HotelListing.DTOs;
 using HotelListing.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -27,6 +28,8 @@ namespace HotelListing.Controllers
 
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Route("register")] 
         public async Task<IActionResult> Register([FromBody] UserDTO userDTO)
         {
