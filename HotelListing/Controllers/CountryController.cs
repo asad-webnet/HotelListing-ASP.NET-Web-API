@@ -2,12 +2,14 @@
 using HotelListing.Data;
 using HotelListing.DTOs;
 using HotelListing.IRepository;
+using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HotelListing.Controllers
 {
+    [ApiVersion("1.0")]
     [Route("api/[controller]")]
     [ApiController]
     public class CountryController : ControllerBase
@@ -24,19 +26,14 @@ namespace HotelListing.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetCountries()
+        [HttpCacheExpiration(MaxAge = 69)]
+        public async Task<IActionResult> GetCountries([FromQuery] RequestParams reqParams)
         {
-            try
-            {
-                var countries = await _unitOfWork.Countries.GetAll();
-                var results = _mapper.Map<IList<CountryDTO>>(countries);
-                return Ok(results);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex,$"Something Went Wrong in the {nameof(GetCountries)}");
-                return StatusCode(500,"Internal Server Error. Please try again later.");
-            }
+            //throw new DivideByZeroException("Divide by zero occurred");
+
+            var countries = await _unitOfWork.Countries.GetAll(requestParams: reqParams,null);
+            var results = _mapper.Map<IList<CountryDTO>>(countries);
+            return Ok(results);
         }
 
         [HttpGet("{id:int}",Name = "GetCountryByID")]
@@ -58,7 +55,7 @@ namespace HotelListing.Controllers
 
         //[Authorize(Roles = "Administrator")]
         [HttpPost]
-        [Authorize(Roles = "Administrator")]
+        //[Authorize(Roles = "Administrator")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateCountry([FromBody] CreateCountryDTO countryDTO)

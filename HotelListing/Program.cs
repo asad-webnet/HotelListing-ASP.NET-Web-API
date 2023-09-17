@@ -1,3 +1,4 @@
+using AspNetCoreRateLimit;
 using HotelListing;
 using HotelListing.Configurations;
 using HotelListing.Data;
@@ -5,6 +6,7 @@ using HotelListing.IRepository;
 using HotelListing.Repository;
 using HotelListing.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -34,6 +36,8 @@ builder.Services.AddAuthentication();
 builder.Services.ConfigureIdentity();
 
 // Configure Identity Security Services END
+
+builder.Services.ConfigureVersioning();
 
 // Configuration JWT START
 builder.Services.ConfigureJWT(builder.Configuration);
@@ -80,8 +84,13 @@ finally
 
 builder.Services.AddControllers();
 
+// Cache
+builder.Services.ConfigureHttpCacheHeaders();
+builder.Services.AddMemoryCache();
 
-
+// Rate Limiting and Throttling
+builder.Services.ConfigureRateLimiting();
+builder.Services.AddHttpContextAccessor();
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -104,8 +113,19 @@ if (app.Environment.IsDevelopment())
 
 app.UseSwagger();
 app.UseSwaggerUI();
+
+app.ConfigureExceptionHandler();
+
+
 app.UseHttpsRedirection();
 app.UseCors("corsapp");
+
+// For Cache
+app.UseResponseCaching();
+app.UseHttpCacheHeaders();
+
+// For Throttling
+app.UseIpRateLimiting();
 
 app.UseRouting();
 app.UseAuthentication();
