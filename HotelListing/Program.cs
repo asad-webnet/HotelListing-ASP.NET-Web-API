@@ -64,7 +64,7 @@ try
     builder.Host.UseSerilog((hostContext, services, configuration) =>
     {
         configuration.WriteTo.File(
-            path: "c:\\hotellistings\\logs\\log-.txt",
+            path: "logs\\log-.txt",
             rollingInterval: RollingInterval.Day,
             restrictedToMinimumLevel: LogEventLevel.Information,
             outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}"
@@ -112,7 +112,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseSwagger();
-app.UseSwaggerUI();
+app.UseSwaggerUI(c =>
+{
+    string swaggerJsonBasePath = string.IsNullOrWhiteSpace(c.RoutePrefix) ? "." : "..";
+    c.SwaggerEndpoint($"{swaggerJsonBasePath}/swagger/v1/swagger.json", "HotelListing v1");
+
+});
 
 app.ConfigureExceptionHandler();
 
